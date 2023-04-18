@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>HTML5</title>
+    <link rel="stylesheet" href="/style/style.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+
+
+</head>
+
+<body>
+
+    <main>
+        <div class="parameter">
+            <div>
+                <select class="stuff">
+                </select>
+
+                <select class="pipe">
+                </select>
+            </div>
+            <div class="form-imput">
+                <input class="size size-lenght" type="number" step="0.2" min="5" max="50" placeholder="Длина" required>
+                <input class="size size-width" type="number" step="0.2" min="5" max="25" placeholder="Ширина"required >
+            </div>
+
+            <div>
+                <select class="thickness">
+                    <option step="1.2">Легкая</option>
+                    <option step="1">Стандартная</option>
+                    <option step="0.8">Усиленная</option>
+                </select>
+            </div>
+            <div>
+                <button class="result-button" disabled/>рассчитать</button>
+            </div>
+        </div>
+        <div class="result">
+            <table>
+                <tr>
+                    <th>Наименование</th>
+                    <th>ед.</th>
+                    <th>кол-во</th>
+                    <th>сумма</th>
+                </tr>
+                <tr>
+                    <td class="selected-stuff"> </td>
+                    <td class="stuff-unit"> </td>
+                    <td class="number-of-stuff"> </td>
+                    <td class="prise-of-stuff"> </td>
+                </tr>
+                <tr>
+                    <td class="selected-pipe"> </td>
+                    <td class="pipe-unit"></td>
+                    <td class="number-of-pipe"> </td>
+                    <td class="prise-of-pipe"> </td>
+                </tr>
+                <tr>
+                    <td class="self-tapping-screw"> </td>
+                    <td class="self-tapping-screw-unit"> </td>
+                    <td class="number-of-self-tapping-screw"> </td>
+                    <td class="prise-of-self-tapping-screw"> </td>
+                </tr>
+            </table>
+
+        </div>
+    </main>
+</body>
+
+
+<script type="module">
+    "use strict"
+    import catalogBd from "../information/catalogData.json" assert { type: "json" };
+
+    $(document).ready(function () {
+
+
+
+        catalogBd.forEach(function (x) {
+            if (x.type == "list")
+                $('<option></option>').text(x.name).attr({
+                    listmaterial: x.material,
+                    listunit: x.unit,
+                    listwidth: x.width,
+                    listprice: x.price
+                }).appendTo(".stuff ");
+            ;
+            if (x.type == "pipe")
+                $('<option></option>').text(x.name).attr({
+                    listmaterial: x.material,
+                    listunit: x.unit,
+                    listwidth: x.width,
+                    listprice: x.price
+                }).appendTo(".pipe ");
+
+            ;
+
+        });
+        $(".size").change(function () {
+            const valid = document.getElementById(this);
+            if (!this.checkValidity()) {
+                alert('значение не должно быть меньше ' + $(this).attr("min") + " или превышать " + $(this).attr("max"));
+                $(".result-button ").css("opacity", ".4");
+                $(".result-button ").attr('disabled',true);
+            }
+            else{
+                $(".result-button ").css("opacity", "1");
+            $(".result-button ").attr('disabled',false);
+        };
+        });
+
+
+        $(" .result-button ").click(function () {
+
+            $("table ").css("display", "block");
+
+            $(".selected-stuff").text($('.stuff option:selected').val());
+            $(".stuff-unit").text($('.stuff option:selected').attr('listunit'));
+            $(".selected-pipe").text($('.pipe option:selected').val());
+            $(".pipe-unit").text($('.pipe option:selected').attr('listunit'));
+
+            $(".number-of-stuff").text(Math.ceil($(".size-lenght").val() * $(".size-width").val() / $('.stuff option:selected').attr('listwidth')));
+
+
+            $(".prise-of-stuff").text(($(".number-of-stuff").text() * $('.stuff option:selected').attr('listprice')).toFixed(2));
+
+
+            let i = 0;
+            let quantityPipeesWidth;
+            do {
+                i++;
+                quantityPipeesWidth = ($(".size-width").val() / i - ($('.pipe option:selected').attr('listwidth') / 1000) * i).toFixed(2);
+
+            }
+            while (quantityPipeesWidth > $('.thickness option:selected').attr('step'));
+
+            let j = 0;
+            let quantityPipeesLenght;
+            do {
+                j++;
+                quantityPipeesLenght = ($(".size-lenght").val() / j - ($('.pipe option:selected').attr('listwidth') / 1000) * j).toFixed(2);
+
+            }
+            while (quantityPipeesLenght > $('.thickness option:selected').attr('step'));
+
+            $(".number-of-pipe").text(i + j);
+
+            $(".prise-of-pipe").text(($(".number-of-pipe").text() * $('.pipe option:selected').attr('listprice')).toFixed(2));
+            $(".self-tapping-screw").text("Саморезы");
+            $(".self-tapping-screw-unit").text("шт");
+
+            if ($('.stuff option:selected').attr("listmaterial") == "plastic") {
+                $(".number-of-self-tapping-screw").text($(".size-width").val() * $(".size-lenght").val() * 10);
+                $(".prise-of-self-tapping-screw").text(($(".number-of-self-tapping-screw").text() * 1.1).toFixed(2));
+            }
+            else {
+                $(".number-of-self-tapping-screw").text($(".size-width").val() * $(".size-lenght").val() * 5);
+                $(".prise-of-self-tapping-screw").text(($(".number-of-self-tapping-screw").text() * 1.1).toFixed(2));
+            }
+
+        });
+
+
+
+    });
+
+
+</script>
+
+
+</html>
