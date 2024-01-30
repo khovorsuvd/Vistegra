@@ -153,11 +153,11 @@
             $(".self-tapping-screw-unit").text("шт");
 
             if ($('.stuff option:selected').attr("listmaterial") == "plastic") {
-                $(".number-of-self-tapping-screw").text($(".size-width").val() * $(".size-lenght").val() * 10);
+                $(".number-of-self-tapping-screw").text(($(".size-width").val() * $(".size-lenght").val() * 10).toFixed(0));
                 $(".prise-of-self-tapping-screw").text(($(".number-of-self-tapping-screw").text() * 1.1).toFixed(2));
             }
             else {
-                $(".number-of-self-tapping-screw").text($(".size-width").val() * $(".size-lenght").val() * 5);
+                $(".number-of-self-tapping-screw").text(($(".size-width").val() * $(".size-lenght").val() * 5).toFixed(0));
                 $(".prise-of-self-tapping-screw").text(($(".number-of-self-tapping-screw").text() * 1.1).toFixed(2));
             }
 
